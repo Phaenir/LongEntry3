@@ -5,24 +5,14 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="Styles/default.css"/>
     <script type="text/javascript" src="Scripts/tableManage.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script type="text/javascript" src="Scripts/jquery.validate.min.js"></script>
-    <script src="Scripts/is.mobile.js" type="text/javascript"></script>
-    <script src="Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
+    <script src="Scripts/is.mobile.js"></script>
+    <script src="Scripts/jquery.maskedinput.min.js"></script>
     <script type="text/javascript" src="Scripts/validationScript.js"></script>
 </head>
 <body>
-<form action="index.php" class="register" method="get" id="LongEntry">
-
-<?php
-/**
- * Created by PhpStorm.
- * User: RSadykov
- * Date: 02.08.2016
- * Time: 14:02
- */
-if (!isset($_GET['posted'])){
-     ?>
+<form action="Models/logentry.php" class="register" method="get" id="LongEntry">
     <h1>Long Entry Generation Script</h1>
     <fieldset class="row1">
         <legend>Ticket Information</legend>
@@ -85,93 +75,21 @@ if (!isset($_GET['posted'])){
     <fieldset class="row4">
         <legend>Generated long entry row</legend>
         <p>
-            <input class="submit" type="submit" value="Confirm &raquo;" name="posted" id="posted"/>
+        <input class="submit" type="submit" value="Confirm &raquo;" />
         </p>
         <p>
-            <input type="text" required="required" name="result" style="width: 830px" readonly/>
+        <input type="text" required="required" name="result" style="width: 830px" readonly/>
         </p>
         <p>
-            <label style="width: 140px">The size of long entry is:</label>
-            <input type="text" required="required" name="size" style="width: 20px" readonly/>
+        <label style="width: 140px">The size of long entry is:</label>
+        <input type="text" required="required" name="size" style="width: 20px" readonly/>
         </p>
         <p>
-            <input class="submit" type="submit" value="Copy"/>
+        <input class="submit" type="submit" value="Copy" name="posted"/>
         </p>
         <div class="clear"></div>
     </fieldset>
     <div class="clear"></div>
 </form>
-<?php
-} else{
-    try{
-        $restrictedTicketIndicator="0";
-        $agencyCode="";
-        for ($i=0;$i<8;$i++){
-            $agencyCode.=" ";
-        }
-        $agencyCodeLen=strlen($agencyCode);
-        if ($agencyCodeLen!=8){
-            throw new Exception("<b>Agency Code</b> must be only 8 symbols");
-        }
-        $extensionIndicator="01";
-        $stopOverCode=" ";
-        $airlineAccountCode = $_GET['airlineAccountCode'];
-        if (!mb_ereg("([0-9][0-9][0-9])"))
-        //
-        $ticketNumber = $_GET['ticketNumber'];
-        //
-        $departureDay = $_GET['departureDay'];
-        //
-        $departureMonth = $_GET['departureMonth'];
-        //
-        $departureYear = $_GET['departureYear'];
-        //
-        $departurePort = $_GET['departurePort'];
-        $pnr = $_GET['pnr'];
-        $carrierCode = $_GET['carrierCode'];
-        $serviceClass = $_GET['serviceClass'];
-        //
-        $destinationCity = $_GET['destinationCity'];
-        $result = "";
-        $size = 0;
-        $checksum = 0;
-        $chk=$_GET['chk'];
-        $space="";
-        $counter=0;
-
-        $result.=$extensionIndicator.$agencyCode;
-        for ($i=0;$i<count($carrierCode);$i++){
-            if ($chk[$i]=='on'){
-                $result.=strtoupper($carrierCode[$i]).strtoupper($serviceClass[$i]).$stopOverCode.strtoupper($destinationCity[$i]);
-                $counter++;
-            }
-        }
-        for ($i=$counter;$i<4;$i++){
-            $space.="       ";
-        }
-        $spaceLen=strlen($space);
-        $result.=$space.$restrictedTicketIndicator.$airlineAccountCode.$ticketNumber;
-        $checksum=$ticketNumber-(floor($ticketNumber/7)*7);
-        $result.=$checksum.$departureMonth.$departureDay.$departureYear.strtoupper($departurePort);
-        $pnr=str_replace(" ","",$pnr);
-        if (strlen($pnr)<20){
-            for ($i=strlen($pnr); $i<20;$i++){
-                $pnr.=" ";
-            }
-        } else{
-            $pnr=substr($pnr,0,20);
-        }
-        $pnrLen=strlen($pnr);
-        $result.=strtoupper($pnr);
-        $checksum=strlen($result);
-    } catch (Exception $e){
-
-    }
-
-
-
-
-}
-?>
 </body>
 </html>
